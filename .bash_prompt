@@ -83,6 +83,19 @@ prompt_git() {
 	fi;
 }
 
+# Add an indicator to show that there's an active vpnc connection
+prompt_vpnc() {
+	# 1st, make sure `vpnc` exists
+	if [[ `hash vpnc 2>/dev/null` ]]; then
+		return;
+	fi
+	# Parse the PID for vpnc; if found, assume that there is an active VPN connection
+	local vpncPID=`ps aux |grep vpnc|grep -v grep|awk '{print $2}'`
+	if [[ ! -z $vpncPID ]]; then
+		echo "[VPN UP] "
+	fi
+}
+
 if tput setaf 1 &> /dev/null; then
 	tput sgr0; # reset colors
 	bold=$(tput bold);
@@ -130,6 +143,7 @@ fi;
 # Set the terminal title to the current working directory.
 PS1="\[\033]0;\w\007\]";
 PS1+="\[${bold}\]\n"; # newline
+PS1+="\[${red}\]\$(prompt_vpnc)"; # VPN Indicator
 PS1+="\[${userStyle}\]\u"; # username
 PS1+="\[${white}\] at ";
 PS1+="\[${hostStyle}\]\h"; # host
