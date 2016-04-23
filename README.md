@@ -1,9 +1,10 @@
 # Tariq86's .dotfiles
 
+These are the dotfiles I use on my development machine(s). They are 99% identical to this repo's upstream ([mathiasbynens/dotfiles](https://github.com/mathiasbynens/dotfiles)), with a few minor tweaks and additions:
 
-These are the dotfiles I use on my development machine(s). They are 99% identical to this repo's upstream ([mathiasbynens/dotfiles](https://github.com/mathiasbynens/dotfiles)), with a few minor tweaks and additions.
-
-<!-- TODO add list of additions/modifications -->
+* Added SVN location to the bash prompt (similar to git)
+* Added VPNc indicator to the bash prompt
+* Minor tweaks to some of the settings
 
 ## Installation
 
