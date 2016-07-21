@@ -22,14 +22,14 @@ prompt_svn() {
     # Parse the repo root && full branch/tag/trunk path using awk
     repoURL="$(echo "$info" | awk '/Repository Root:/ {print $NF}')"
     repoURL="${repoURL//\//\\/}"
-    fullBranchPath="$(echo "$info" | awk '/URL:/ {print $NF}')"
+    fullBranchPath="$(echo "$info" | awk '/^URL:/ {print $NF}')"
     # Replace full repo path with ^ (to get relative branch/tag/trunk path only)
     branchName="${fullBranchPath/${repoURL}/^}"
     # Get last and current revision #s
     last="$(echo "$info" | awk '/Last Changed Rev:/ {print $4}')"
     current="$(echo "$info" | awk '/Revision:/ {print $2}')"
     # Put it all together now...
-    echo "${1}${branchName} ${blue}[${last}:${current}]"
+    echo "${white} on ${violet}${branchName} ${blue}[${last}:${current}]"
   fi
 }
 
@@ -83,6 +83,19 @@ prompt_git() {
 	fi;
 }
 
+# Add an indicator to show that there's an active vpnc connection
+prompt_vpnc() {
+	# 1st, make sure `vpnc` exists
+	if [[ `hash vpnc 2>/dev/null` ]]; then
+		return;
+	fi
+	# Parse the PID for vpnc; if found, assume that there is an active VPN connection
+	local vpncPID=`ps aux |grep vpnc|grep -v grep|awk '{print $2}'`
+	if [[ ! -z $vpncPID ]]; then
+		echo "[VPN UP] "
+	fi
+}
+
 if tput setaf 1 &> /dev/null; then
 	tput sgr0; # reset colors
 	bold=$(tput bold);
@@ -127,16 +140,17 @@ else
 	hostStyle="${yellow}";
 fi;
 
-# Set the terminal title to the current working directory.
-PS1="\[\033]0;\w\007\]";
+# Set the terminal title and prompt.
+PS1="\[\033]0;\W\007\]"; # working directory base name
 PS1+="\[${bold}\]\n"; # newline
+PS1+="\[${red}\]\$(prompt_vpnc)"; # VPN Indicator
 PS1+="\[${userStyle}\]\u"; # username
 PS1+="\[${white}\] at ";
 PS1+="\[${hostStyle}\]\h"; # host
 PS1+="\[${white}\] in ";
-PS1+="\[${green}\]\w"; # working directory
+PS1+="\[${green}\]\w"; # working directory full path
 PS1+="\$(prompt_git \"\[${white}\] on \[${violet}\]\" \"\[${blue}\]\")"; # Git repository details
-PS1+="\$(prompt_svn \"${white} on ${violet}\")";                         # SVN repository details
+PS1+="\$(prompt_svn)";                                                   # SVN repository details
 PS1+="\n";
 PS1+="\[${white}\]\$ \[${reset}\]"; # `$` (and reset color)
 export PS1;
