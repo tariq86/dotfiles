@@ -18,6 +18,15 @@ prompt_svn() {
   local last current rootPath repoURL fullBranchPath branchName
   # Check if 'svn info' returned anything
   if [[ "$info" ]]; then
+    # Get last and current revision #s
+    last="$(echo "$info" | awk '/Last Changed Rev:/ {print $4}')"
+    current="$(echo "$info" | awk '/Revision:/ {print $2}')"
+    # Check for the newer 'Relative URL' message -- no need to parse the relative URL
+    branchName="$(echo "$info" | awk '/Relative URL:/ {print $NF}')"
+    if [[ "$branchName" ]]; then
+        echo "${white} on ${violet}${branchName} ${blue}[${last}:${current}]"
+        exit 0
+    fi
     # Parse the WC root path, then call svn info again using this path to get the root checkout info
     rootPath="$(echo "$info" | awk '/Working Copy Root Path:/ {print $NF}')"
     info="$(svn info ${rootPath} 2> /dev/null)"
@@ -27,9 +36,6 @@ prompt_svn() {
     fullBranchPath="$(echo "$info" | awk '/^URL:/ {print $NF}')"
     # Replace full repo path with ^ (to get relative branch/tag/trunk path only)
     branchName="${fullBranchPath/${repoURL}/^}"
-    # Get last and current revision #s
-    last="$(echo "$info" | awk '/Last Changed Rev:/ {print $4}')"
-    current="$(echo "$info" | awk '/Revision:/ {print $2}')"
     # Put it all together now...
     echo "${white} on ${violet}${branchName} ${blue}[${last}:${current}]"
   fi
