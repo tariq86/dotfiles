@@ -91,8 +91,8 @@ prompt_git() {
 	fi;
 }
 
-# Add an indicator to show that there's an active vpnc connection
-prompt_vpnc() {
+# Add an indicator to show that there's an active vpnc connection (Ubuntu/Linux)
+prompt_linux_vpn() {
 	# 1st, make sure `vpnc` exists
 	if [[ `hash vpnc 2>/dev/null` ]]; then
 		return;
@@ -102,6 +102,16 @@ prompt_vpnc() {
 	if [[ ! -z $vpncPID ]]; then
 		echo "[VPN UP] "
 	fi
+}
+
+# Add an indicator to show active VPN connections (macOS)
+prompt_macos_vpn() {
+	local vpn=$( netstat -rn | grep utun1 | wc -l )
+	if [[ $vpn -eq 0 ]] ; then
+  	  return;
+	else
+  	echo "[VPN UP] " # VPN Active
+	fi;
 }
 
 if tput setaf 1 &> /dev/null; then
@@ -151,7 +161,8 @@ fi;
 # Set the terminal title and prompt.
 PS1="\[\033]0;\W\007\]"; # working directory base name
 PS1+="\[${bold}\]\n"; # newline
-PS1+="\[${red}\]\$(prompt_vpnc)"; # VPN Indicator
+PS1+="\[${red}\]\$(prompt_linux_vpn)"; # VPN Indicator (Linux)
+PS1+="\[${red}\]\$(prompt_macos_vpn)"; # VPN Indicator (macOS)
 PS1+="\[${userStyle}\]\u"; # username
 PS1+="\[${white}\] at ";
 PS1+="\[${hostStyle}\]\h"; # host
