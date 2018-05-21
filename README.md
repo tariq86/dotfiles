@@ -1,18 +1,17 @@
 # Tariq86's .dotfiles
 
-These are the dotfiles I use on my development machine(s). They are 99% identical to this repo's upstream ([mathiasbynens/dotfiles](https://github.com/mathiasbynens/dotfiles)), with a few minor tweaks and additions:
+These are the dotfiles I use on my development machine(s). They're pretty similar to this repo's upstream ([mathiasbynens/dotfiles](https://github.com/mathiasbynens/dotfiles)), with a few minor tweaks and additions:
 
-* Added SVN location to the bash prompt (similar to git)
 * Added VPNc indicator to the bash prompt
-* Minor tweaks to some of the settings
+* Minor tweaks to some of the settings to match my personal preferences
 
 ## Installation
 
-**Warning:** If you want to give these dotfiles a try, you should first fork this repository, review the code, and remove things you don’t want or need. Don’t blindly use my settings unless you know what that entails. Use at your own risk!
+**Warning:** Please read through these files to make sure you understand what they are all for or what they are doing. Some of the stuff is pretty opinionated, so you may want to fork and make changes. *I am not responsible for any issues or inconveniences you may experience as a result of using this repository. Use at your own risk!*
 
 ### Using Git and the bootstrap script
 
-You can clone the repository wherever you want. (I like to keep it in `~/Projects/dotfiles`, with `~/dotfiles` as a symlink.) The bootstrapper script will pull in the latest version and copy the files to your home folder.
+You can clone the repository wherever you want. The bootstrapper script will pull in the latest version and copy the files to your home folder.
 
 ```bash
 git clone https://github.com/tariq86/dotfiles.git && cd dotfiles && source bootstrap.sh
